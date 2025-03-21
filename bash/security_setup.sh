@@ -6,18 +6,11 @@
 # SSH 安全配置、防火墙、入侵防御、用户环境、自动更新以及 Docker 的安全配置。
 # 注意：请务必以 root 身份运行！
 
-# 提前安装screen
-# apt-get update && apt-get install -y --no-install-recommends screen curl
-# 下载脚本
-# curl -fsSL https://raw.githubusercontent.com/hxol/script/refs/heads/main/bash/security_setup.sh -o /root/security_setup.sh
-# 赋予执行权限
-# chmod +x security_setup.sh
-# 创建 screen 终端 并运行脚本
-# screen -S security_setup ./security_setup.sh
+# 提前安装screen、下载脚本、赋予执行权限、创建 screen 终端 并运行脚本
+# apt-get update && apt-get install -y --no-install-recommends screen curl && curl -fsSL https://raw.githubusercontent.com/hxol/script/refs/heads/main/bash/security_setup.sh -o /root/security_setup.sh && chmod +x security_setup.sh && screen -S security_setup ./security_setup.sh
+# 
 # 重新连接会话
 # screen -r security_setup
-
-
 
 # 检查是否为 root 用户
 if [[ $EUID -ne 0 ]]; then
