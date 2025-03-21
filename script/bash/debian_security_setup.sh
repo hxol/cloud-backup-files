@@ -21,6 +21,7 @@ fi
 # 初始化设置
 set -eo pipefail
 trap 'echo -e "\033[31m错误发生在第$LINENO行，命令: $BASH_COMMAND\033[0m"; exit 1' ERR
+export PATH=$PATH:/usr/sbin
 
 # 颜色定义
 RED='\033[0;31m'
