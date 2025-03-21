@@ -222,6 +222,12 @@ GatewayPorts no
 PermitTunnel no
 EOF
 
+# 删除短 Diffie-Hellman 密钥
+backup_file /etc/ssh/moduli
+
+awk '$5 >= 3071' /etc/ssh/moduli | tee /etc/ssh/moduli.tmp
+mv /etc/ssh/moduli.tmp /etc/ssh/moduli
+
     systemctl restart ssh
 }
 
