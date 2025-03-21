@@ -7,7 +7,7 @@
 # 注意：请务必以 root 身份运行！
 
 # 提前安装screen
-# apt update && apt install screen -y
+# apt-get update && apt-get install -y --no-install-recommends screen
 # 下载脚本
 # curl -fsSL https://raw.githubusercontent.com/hxol/script/refs/heads/main/bash/security_setup.sh -o /root/security_setup.sh
 # 赋予执行权限
