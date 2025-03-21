@@ -7,7 +7,7 @@
 # 注意：请务必以 root 身份运行！
 
 # 提前安装screen
-# apt-get update && apt-get install -y --no-install-recommends screen
+# apt-get update && apt-get install -y --no-install-recommends screen curl
 # 下载脚本
 # curl -fsSL https://raw.githubusercontent.com/hxol/script/refs/heads/main/bash/security_setup.sh -o /root/security_setup.sh
 # 赋予执行权限
@@ -115,7 +115,7 @@ validate_input() {
 system_init() {
     echo -e "${YELLOW}[1/9] 更新系统及安装基础工具...${NC}"
     apt-get update && apt-get install -y --no-install-recommends \
-        curl wget apt-transport-https ca-certificates \
+        wget apt-transport-https ca-certificates \
         gnupg2 software-properties-common
 }
 
