@@ -113,13 +113,44 @@ system_init() {
         gnupg2 software-properties-common
 }
 
+# 配置用户环境
+configure_userenv() {
+    echo -e "${YELLOW}[2/9] 配置用户环境...${NC}"
+    
+    # 创建用户并设置密码、加入sudo组
+    adduser --disabled-password --gecos "" "$NEW_USER"
+    echo "$NEW_USER:$NEW_USER_PASS" | chpasswd
+    usermod -aG sudo "$NEW_USER"
+
+    # 配置sudo：允许新用户无密码sudo（可根据需要调整）
+    echo "$NEW_USER ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/90-$NEW_USER
+
+    # 限制谁可以使用 su
+    groupadd suusers
+    usermod -a -G suusers $NEW_USER
+    usermod -a -G suusers root
+    dpkg-statoverride --update --add root suusers 4750 /bin/su
+
+    # 本地化设置
+    apt-get install -y locales fonts-wqy-zenhei
+    sed -i 's/# zh_CN.UTF-8/zh_CN.UTF-8/' /etc/locale.gen
+    locale-gen
+    update-locale LANG=en_US.UTF-8 LANGUAGE=en_US:zh_CN
+
+    # 设置时区
+    timedatectl set-timezone Asia/Shanghai
+}
+
 # 系统安全加固
 security_hardening() {
-    echo -e "${YELLOW}[2/9] 系统安全加固...${NC}"
-    
+    echo -e "${YELLOW}[3/9] 系统安全加固...${NC}"
+
     # 内核参数优化
+    # 将内核参数写入独立配置文件，避免重复写入
+    SYSCTL_CONF="/etc/sysctl.d/99-security-hardening.conf"
     backup_file /etc/sysctl.conf
-    cat <<EOF >> /etc/sysctl.conf
+    backup_file "$SYSCTL_CONF"
+    cat <<EOF > "$SYSCTL_CONF"
 # 网络防护
 net.ipv4.tcp_syncookies = 1
 net.ipv4.tcp_max_syn_backlog = 2048
@@ -152,7 +183,7 @@ EOF
 
 # 配置SSH
 configure_ssh() {
-    echo -e "${YELLOW}[3/9] 配置SSH安全...${NC}"
+    echo -e "${YELLOW}[4/9] 配置SSH安全...${NC}"
     
     # 备份并重新生成主机密钥
     # 为避免影响现有连接，将现有主机密钥备份后再生成新密钥
@@ -234,7 +265,7 @@ mv /etc/ssh/moduli.tmp /etc/ssh/moduli
 
 # 配置防火墙（nftables）
 configure_firewall() {
-    echo -e "${YELLOW}[4/9] 配置nftables防火墙...${NC}"
+    echo -e "${YELLOW}[5/9] 配置nftables防火墙...${NC}"
     
     apt-get install -y nftables
     systemctl enable nftables
@@ -299,7 +330,7 @@ EOF
 
 # 配置fail2ban入侵防御
 configure_fail2ban() {
-    echo -e "${YELLOW}[5/9] 配置入侵防御...${NC}"
+    echo -e "${YELLOW}[6/9] 配置入侵防御...${NC}"
     
     apt-get install -y fail2ban
 
@@ -315,34 +346,6 @@ action = nftables[type=multiport]
 EOF
 
     systemctl restart fail2ban
-}
-
-# 配置用户环境
-configure_userenv() {
-    echo -e "${YELLOW}[6/9] 配置用户环境...${NC}"
-    
-    # 创建用户并设置密码、加入sudo组
-    adduser --disabled-password --gecos "" "$NEW_USER"
-    echo "$NEW_USER:$NEW_USER_PASS" | chpasswd
-    usermod -aG sudo "$NEW_USER"
-
-    # 配置sudo：允许新用户无密码sudo（可根据需要调整）
-    echo "$NEW_USER ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/90-$NEW_USER
-
-    # 限制谁可以使用 su
-    groupadd suusers
-    usermod -a -G suusers $NEW_USER
-    usermod -a -G suusers root
-    dpkg-statoverride --update --add root suusers 4750 /bin/su
-
-    # 本地化设置
-    apt-get install -y locales fonts-wqy-zenhei
-    sed -i 's/# zh_CN.UTF-8/zh_CN.UTF-8/' /etc/locale.gen
-    locale-gen
-    update-locale LANG=en_US.UTF-8 LANGUAGE=en_US:zh_CN
-
-    # 设置时区
-    timedatectl set-timezone Asia/Shanghai
 }
 
 # 配置自动更新
@@ -414,11 +417,11 @@ main() {
     check_arch
     validate_input
     system_init
+    configure_userenv
     security_hardening
     configure_ssh
     configure_firewall
     configure_fail2ban
-    configure_userenv
     configure_autoupdate
     configure_docker
     final_check
