@@ -328,6 +328,12 @@ configure_userenv() {
     # 配置sudo：允许新用户无密码sudo（可根据需要调整）
     echo "$NEW_USER ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/90-$NEW_USER
 
+    # 限制谁可以使用 su
+    groupadd suusers
+    usermod -a -G suusers $NEW_USER
+    usermod -a -G suusers root
+    dpkg-statoverride --update --add root suusers 4750 /bin/su
+
     # 本地化设置
     apt-get install -y locales fonts-wqy-zenhei
     sed -i 's/# zh_CN.UTF-8/zh_CN.UTF-8/' /etc/locale.gen
