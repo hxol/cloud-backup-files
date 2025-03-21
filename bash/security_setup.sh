@@ -9,7 +9,7 @@
 # 提前安装screen
 # apt update && apt install screen -y
 # 下载脚本
-#
+# curl -fsSL https://raw.githubusercontent.com/hxol/script/refs/heads/main/bash/security_setup.sh -o /root/security_setup.sh
 # 赋予执行权限
 # chmod +x security_setup.sh
 # 创建 screen 终端 并运行脚本
