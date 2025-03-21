@@ -243,7 +243,7 @@ AllowUsers $NEW_USER
 DenyUsers root
 
 # 加密算法
-Ciphers chacha20-poly1305@openssh.com,aes256-gcm@openssh.com,aes128-gcm@openssh.com
+Ciphers aes256-gcm@openssh.com,aes128-gcm@openssh.com
 MACs hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com
 KexAlgorithms curve25519-sha256@libssh.org,diffie-hellman-group18-sha512
 
