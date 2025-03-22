@@ -123,9 +123,6 @@ configure_userenv() {
     echo "$NEW_USER:$NEW_USER_PASS" | chpasswd
     usermod -aG sudo "$NEW_USER"
 
-    # 配置sudo：允许新用户无密码sudo（可根据需要调整）
-    echo "$NEW_USER ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/90-$NEW_USER
-
     # 限制谁可以使用 su
     groupadd suusers
     usermod -a -G suusers $NEW_USER
