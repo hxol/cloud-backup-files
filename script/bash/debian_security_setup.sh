@@ -374,7 +374,10 @@ configure_docker() {
     
     # 安装Docker
     install -m 0755 -d /etc/apt/keyrings
-    curl -fsSL https://download.docker.com/linux/debian/gpg -o /etc/apt/keyrings/docker.asc
+    if ! curl -fsSL https://download.docker.com/linux/debian/gpg -o /etc/apt/keyrings/docker.asc; then
+        echo -e "${RED}下载 Docker GPG 密钥失败${NC}"
+        exit 1
+    fi
     chmod a+r /etc/apt/keyrings/docker.asc
     echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/debian $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
 
@@ -384,7 +387,6 @@ configure_docker() {
     mkdir -p /etc/docker
     cat <<EOF > /etc/docker/daemon.json
 {
-  "userns-remap": "$NEW_USER",
   "data-root": "/var/lib/docker",
   "log-driver": "json-file",
   "log-opts": {"max-size": "10m", "max-file": "3"},
@@ -396,6 +398,7 @@ configure_docker() {
 EOF
 
     systemctl restart docker
+    systemctl enable docker
 }
 
 # 最终检查
