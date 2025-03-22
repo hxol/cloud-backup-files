@@ -61,11 +61,11 @@ validate_input() {
     }
 
     validate_pubkey() {
-        grep -qE '^(ssh-(ed25519|rsa|dss)) AAAA[0-9A-Za-z+/]+[=]{0,3}( .*)?$' <<<"$1"
+        grep -qE '^(ssh-(ed25519|rsa|dss)|ecdsa-sha2-nistp256) AAAA[0-9A-Za-z+/]+={0,3}( .*)?$' <<<"$1"
     }
 
     validate_username() {
-        [[ $1 =~ ^[a-z_][a-z0-9_-]{3,31}$ ]] && ! grep -qE '^(root|bin|daemon|adm)' <<<"$1"
+        [[ $1 =~ ^[a-z_][a-z0-9_-]{3,31}$ ]] && ! grep -qE '^(root|bin|daemon|adm|nobody)' <<<"$1"
     }
 
     validate_password() {
