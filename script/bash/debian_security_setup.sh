@@ -266,7 +266,8 @@ mv /etc/ssh/moduli.tmp /etc/ssh/moduli
 # 配置防火墙（nftables）
 configure_firewall() {
     echo -e "${YELLOW}[5/9] 配置nftables防火墙...${NC}"
-    
+
+    apt purge -y ufw iptables
     apt-get install -y nftables
     systemctl enable nftables
 
@@ -335,10 +336,15 @@ configure_fail2ban() {
     apt-get install -y fail2ban
 
     cat <<EOF > /etc/fail2ban/jail.d/sshd.conf
+[DEFAULT]
+# 使用 systemd 作为日志后端
+backend = systemd
+# 可选：将日志输出到 systemd-journal（默认已支持）
+logtarget = SYSTEMD-JOURNAL
+
 [sshd]
 enabled = true
 port = $SSH_PORT
-logpath = %(syslog_authpriv)s
 maxretry = 3
 findtime = 600
 bantime = 86400
