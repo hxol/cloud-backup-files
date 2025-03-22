@@ -3,7 +3,7 @@
 # 最后更新：2025年3月21日（修订版）
 #
 # 本脚本对 Debian 系统进行安全加固，包括系统初始化、内核参数优化、
-# SSH 安全配置、防火墙、入侵防御、用户环境、自动更新以及 Docker 的安全配置。
+# SSH 安全配置、防火墙、入侵防御、用户环境、自动更新。
 # 注意：请务必以 root 身份运行！
 
 # 使用方法：提前安装screen、下载脚本、赋予执行权限、创建 screen 终端 并运行脚本
@@ -276,7 +276,6 @@ configure_firewall() {
 flush ruleset
 
 define SSH_PORT = $SSH_PORT
-define DOCKER_IFACE = "docker0"
 
 table inet global {
     chain input {
@@ -304,8 +303,6 @@ table inet global {
 
     chain forward {
         type filter hook forward priority 0; policy drop;
-        ct status dnat accept
-        iifname \$DOCKER_IFACE oifname != \$DOCKER_IFACE accept
     }
 
     chain output {
@@ -368,39 +365,6 @@ Unattended-Upgrade::Automatic-Reboot-Time "03:00";
 EOF
 }
 
-# 配置Docker
-configure_docker() {
-    echo -e "${YELLOW}[8/9] 配置容器安全...${NC}"
-    
-    # 安装Docker
-    install -m 0755 -d /etc/apt/keyrings
-    if ! curl -fsSL https://download.docker.com/linux/debian/gpg -o /etc/apt/keyrings/docker.asc; then
-        echo -e "${RED}Failed to download Docker GPG key${NC}"
-        exit 1
-    fi
-    chmod a+r /etc/apt/keyrings/docker.asc
-    echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/debian $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
-
-    apt-get update && apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y
-
-    # Docker安全配置（iptables设置为true让Docker自动配置网络规则）
-    mkdir -p /etc/docker
-    cat <<EOF > /etc/docker/daemon.json
-{
-  "data-root": "/var/lib/docker",
-  "log-driver": "json-file",
-  "log-opts": {"max-size": "10m", "max-file": "3"},
-  "live-restore": true,
-  "icc": false,
-  "userland-proxy": false,
-  "iptables": false
-}
-EOF
-
-    systemctl restart docker
-    systemctl enable docker
-}
-
 # 最终检查
 final_check() {
     echo -e "${YELLOW}[9/9] 最终验证...${NC}"
@@ -415,9 +379,6 @@ final_check() {
     systemctl is-active --quiet ssh || { echo -e "${RED}SSH服务未运行${NC}"; exit 1; }
     systemctl is-active --quiet nftables || { echo -e "${RED}防火墙未运行${NC}"; exit 1; }
     fail2ban-client status sshd >/dev/null || { echo -e "${RED}fail2ban配置错误${NC}"; exit 1; }
-    
-    # Docker验证
-    docker run --rm hello-world >/dev/null || { echo -e "${RED}Docker测试失败${NC}"; exit 1; }
 }
 
 # 主执行流程
@@ -431,7 +392,6 @@ main() {
     configure_firewall
     configure_fail2ban
     configure_autoupdate
-    configure_docker
     final_check
 
     echo -e "\n${GREEN}安全配置完成！${NC}"
