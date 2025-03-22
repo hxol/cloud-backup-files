@@ -322,6 +322,9 @@ table ip6 global {
         icmpv6 type { echo-request } limit rate 5/second accept
         jump f2b-sshd
     }
+chain f2b-sshd {
+        # 动态规则由 fail2ban 管理
+    }    
 }
 EOF
     nft -f /etc/nftables.conf
