@@ -261,34 +261,14 @@ mv /etc/ssh/moduli.tmp /etc/ssh/moduli
     systemctl restart ssh
 }
 
-# 配置fail2ban入侵防御
-configure_fail2ban() {
-    echo -e "${YELLOW}[5/9] 配置入侵防御...${NC}"
-    
-    apt-get install -y fail2ban
-    
-    cat <<EOF > /etc/fail2ban/jail.d/sshd.conf
-[sshd]
-enabled = true
-port = $SSH_PORT
-backend = systemd
-logpath = %(sshd_log)s
-maxretry = 3
-findtime = 600
-bantime = 86400
-action = nftables[type=multiport]
-EOF
-
-}
-
 
 # 配置防火墙（nftables）
 configure_firewall() {
-    echo -e "${YELLOW}[6/9] 配置nftables防火墙...${NC}"
+    echo -e "${YELLOW}[5/9] 配置nftables防火墙...${NC}"
 
     apt purge -y ufw iptables
     apt-get install -y nftables
-    systemctl enable nftables
+    systemctl enable --now nftables
 
     backup_file /etc/nftables.conf
     cat <<EOF > /etc/nftables.conf
@@ -344,10 +324,28 @@ table ip6 global {
     }
 }
 EOF
-    systemctl enable --now fail2ban
-    systemctl restart fail2ban
-    
     nft -f /etc/nftables.conf
+}
+
+# 配置fail2ban入侵防御
+configure_fail2ban() {
+    echo -e "${YELLOW}[6/9] 配置入侵防御...${NC}"
+    
+    apt-get install -y fail2ban
+    systemctl enable --now fail2ban
+    
+    cat <<EOF > /etc/fail2ban/jail.d/sshd.conf
+[sshd]
+enabled = true
+port = $SSH_PORT
+backend = systemd
+logpath = %(sshd_log)s
+maxretry = 3
+findtime = 600
+bantime = 86400
+action = nftables[type=multiport]
+EOF
+    systemctl restart fail2ban
 }
 
 
@@ -427,8 +425,8 @@ main() {
     configure_userenv
     security_hardening
     configure_ssh
-    configure_fail2ban
     configure_firewall
+    configure_fail2ban
     configure_autoupdate
     configure_docker
     final_check
