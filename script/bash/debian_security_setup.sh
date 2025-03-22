@@ -14,13 +14,13 @@
 
 # 检查是否为 root 用户
 if [[ $EUID -ne 0 ]]; then
-    echo -e "\033[31m错误：请以 root 用户运行此脚本！\033[0m"
+    echo -e "\033[31mError: Please run this script as root!\033[0m"
     exit 1
 fi
 
 # 初始化设置
 set -eo pipefail
-trap 'echo -e "\033[31m错误发生在第$LINENO行，命令: $BASH_COMMAND\033[0m"; exit 1' ERR
+trap 'echo -e "\033[31mThe error occurred at line $LINENO，command: $BASH_COMMAND\033[0m"; exit 1' ERR
 
 # 颜色定义
 RED='\033[0;31m'
@@ -74,34 +74,34 @@ validate_input() {
 
     # 执行验证
     while :; do
-        read -rp "请输入SSH端口号 [1024-65535] (默认 2022): " SSH_PORT
+        read -rp "Please enter the SSH port number [1024-65535] (default 2022): " SSH_PORT
         SSH_PORT=${SSH_PORT:-2022}
-        validate_port "$SSH_PORT" && break || echo -e "${RED}无效端口号${NC}"
+        validate_port "$SSH_PORT" && break || echo -e "${RED}Invalid port number${NC}"
     done
 
     while :; do
-        read -rp "请粘贴SSH公钥内容: " SSH_KEY
-        validate_pubkey "$SSH_KEY" && break || echo -e "${RED}无效的公钥格式${NC}"
+        read -rp "Please paste the SSH public key content: " SSH_KEY
+        validate_pubkey "$SSH_KEY" && break || echo -e "${RED}Invalid public key format${NC}"
     done
 
     while :; do
-        read -rp "请输入新用户名: " NEW_USER
-        validate_username "$NEW_USER" && break || echo -e "${RED}无效的用户名${NC}"
+        read -rp "Please enter a new username: " NEW_USER
+        validate_username "$NEW_USER" && break || echo -e "${RED}Invalid username${NC}"
     done
 
     while :; do
-        read -rsp "请输入密码（至少8字符，含大小写和数字）: " NEW_USER_PASS
+        read -rsp "Please enter a password (at least 8 characters, including uppercase and lowercase letters and numbers): " NEW_USER_PASS
         echo
-        validate_password "$NEW_USER_PASS" && break || echo -e "${RED}密码不符合复杂度要求${NC}"
+        validate_password "$NEW_USER_PASS" && break || echo -e "${RED}The password does not meet the complexity requirements${NC}"
     done
 
     # 可选：是否启用密码认证（默认禁用，安全起见建议使用公钥认证）
     while :; do
-        read -rp "是否允许密码认证？(y/N): " allow_pass
+        read -rp "Allow password authentication for SSH ?(y/N): " allow_pass
         case "$allow_pass" in
             [Yy]* ) PASSWORD_AUTH="yes"; break ;;
             [Nn]*|"" ) PASSWORD_AUTH="no"; break ;;
-            * ) echo "请输入 y 或 n." ;;
+            * ) echo "Please enter y or n." ;;
         esac
     done
 }
