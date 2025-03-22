@@ -47,10 +47,11 @@ backup_file() {
 
 # 系统检查：检查是否为支持的 CPU 架构
 check_arch() {
-    [[ $(arch) == "x86_64" || $(arch) == "aarch64" ]] || {
-        echo -e "${RED}不支持的CPU架构: $(arch)${NC}" >&2
+    arch_type=$(arch)
+    if [[ "$arch_type" != "x86_64" && "$arch_type" != "aarch64" ]]; then
+        echo -e "${RED}不支持的CPU架构: $arch_type${NC}" >&2
         exit 1
-    }
+    fi
 }
 
 # 输入验证函数
