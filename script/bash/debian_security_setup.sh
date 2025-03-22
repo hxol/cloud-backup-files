@@ -31,7 +31,7 @@ NC='\033[0m'
 
 # 环境设置
 export PATH=$PATH:/usr/sbin
-export LANG=en_US.UTF-8
+export LC_ALL=en_US.UTF-8
 export DEBIAN_FRONTEND=noninteractive
 BACKUP_DIR="/root/backup_$(date +%Y%m%d%H%M%S)"
 mkdir -p "$BACKUP_DIR"
