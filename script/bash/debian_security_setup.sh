@@ -361,6 +361,7 @@ configure_autoupdate() {
     echo -e "${YELLOW}[7/9] 配置自动更新...${NC}"
     
     apt-get install -y unattended-upgrades
+    systemctl enable --now unattended-upgrades
     cat <<EOF > /etc/apt/apt.conf.d/50unattended-upgrades
 Unattended-Upgrade::Origins-Pattern {
     "origin=Debian,codename=$(lsb_release -cs),label=Debian-Security";
