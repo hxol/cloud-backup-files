@@ -111,7 +111,7 @@ system_init() {
     echo -e "${YELLOW}[1/9] 更新系统及安装基础工具...${NC}"
     apt-get update && apt-get install -y --no-install-recommends \
         wget apt-transport-https ca-certificates \
-        gnupg2 software-properties-common
+        gnupg2 software-properties-common sudo
 }
 
 # 配置用户环境
