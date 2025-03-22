@@ -41,7 +41,7 @@ backup_file() {
     local file_path="$1"
     if [[ -f "$file_path" ]]; then
         cp -a "$file_path" "$BACKUP_DIR/$(basename "$file_path").backup_$(date +%Y%m%d%H%M%S)"
-        echo -e "${YELLOW}已备份 $file_path 到 $BACKUP_DIR${NC}"
+        echo -e "${YELLOW}Backed up $file_path to $BACKUP_DIR${NC}"
     fi
 }
 
@@ -49,7 +49,7 @@ backup_file() {
 check_arch() {
     arch_type=$(arch)
     if [[ "$arch_type" != "x86_64" && "$arch_type" != "aarch64" ]]; then
-        echo -e "${RED}不支持的CPU架构: $arch_type${NC}" >&2
+        echo -e "${RED}Unsupported CPU architectures: $arch_type${NC}" >&2
         exit 1
     fi
 }
@@ -375,7 +375,7 @@ configure_docker() {
     # 安装Docker
     install -m 0755 -d /etc/apt/keyrings
     if ! curl -fsSL https://download.docker.com/linux/debian/gpg -o /etc/apt/keyrings/docker.asc; then
-        echo -e "${RED}下载 Docker GPG 密钥失败${NC}"
+        echo -e "${RED}Failed to download Docker GPG key${NC}"
         exit 1
     fi
     chmod a+r /etc/apt/keyrings/docker.asc
