@@ -345,6 +345,7 @@ logtarget = SYSTEMD-JOURNAL
 [sshd]
 enabled = true
 port = $SSH_PORT
+logpath = %(syslog_authpriv)s
 maxretry = 3
 findtime = 600
 bantime = 86400
