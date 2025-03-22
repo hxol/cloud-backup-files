@@ -1,13 +1,13 @@
 #!/bin/bash
-# 安全配置脚本 v4.1
-# 最后更新：2025年3月21日（修订版）
+# 安全配置脚本 v4.4
+# 最后更新：2025年3月22日（修订版）
 #
 # 本脚本对 Debian 系统进行安全加固，包括系统初始化、内核参数优化、
 # SSH 安全配置、防火墙、入侵防御、用户环境、自动更新。
 # 注意：请务必以 root 身份运行！
 
-# 使用方法：提前安装screen、下载脚本、赋予执行权限、创建 screen 终端 并运行脚本
-# export LC_ALL=en_US.UTF-8 && apt-get update && apt-get install -y --no-install-recommends screen curl && curl -fsSL https://raw.githubusercontent.com/hxol/cloud-backup-files/refs/heads/main/script/bash/debian_security_setup.sh -o /root/security_setup.sh && chmod +x security_setup.sh && screen -S security_setup ./security_setup.sh
+#  vps开机会自动安装qemu-gues等软件，要提前用 `ps aux | grep -E 'apt|dpkg'` 检查。
+# 使用方法：` export LC_ALL=en_US.UTF-8 && apt-get update && apt-get install -y --no-install-recommends screen curl && curl -fsSL https://raw.githubusercontent.com/hxol/cloud-backup-files/refs/heads/main/script/bash/debian_security_setup.sh -o /root/security_setup.sh && chmod +x security_setup.sh && screen -S security_setup ./security_setup.sh`
 # 
 # 重新连接会话
 # screen -r security_setup
