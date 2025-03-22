@@ -443,3 +443,6 @@ main() {
 }
 
 main
+
+echo -e "\n${GREEN}安全配置完成！${NC}\n按任意键退出…"
+read -n 1
