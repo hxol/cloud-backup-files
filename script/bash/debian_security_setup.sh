@@ -337,15 +337,10 @@ configure_fail2ban() {
     systemctl enable --now fail2ban
 
     cat <<EOF > /etc/fail2ban/jail.d/sshd.conf
-[DEFAULT]
-# 使用 systemd 作为日志后端
-backend = systemd
-# 可选：将日志输出到 systemd-journal（默认已支持）
-logtarget = SYSTEMD-JOURNAL
-
 [sshd]
 enabled = true
 port = $SSH_PORT
+backend = systemd
 logpath = %(syslog_authpriv)s
 maxretry = 3
 findtime = 600
