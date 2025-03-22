@@ -341,7 +341,7 @@ configure_fail2ban() {
 enabled = true
 port = $SSH_PORT
 backend = systemd
-logpath = %(syslog_authpriv)s
+logpath = %(sshd_log)s
 maxretry = 3
 findtime = 600
 bantime = 86400
