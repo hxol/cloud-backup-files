@@ -334,6 +334,7 @@ configure_fail2ban() {
     echo -e "${YELLOW}[6/9] 配置入侵防御...${NC}"
     
     apt-get install -y fail2ban
+    systemctl enable --now fail2ban
 
     cat <<EOF > /etc/fail2ban/jail.d/sshd.conf
 [DEFAULT]
