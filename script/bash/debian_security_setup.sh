@@ -121,7 +121,8 @@ configure_userenv() {
     # 创建用户并设置密码、加入sudo组
     adduser --disabled-password --gecos "" "$NEW_USER"
     echo "$NEW_USER:$NEW_USER_PASS" | chpasswd
-    usermod -aG sudo "$NEW_USER"
+    #usermod -aG sudo "$NEW_USER"
+    adduser $NEW_USER sudo
 
     # 限制谁可以使用 su
     groupadd suusers
