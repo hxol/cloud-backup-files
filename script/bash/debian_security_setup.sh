@@ -132,6 +132,7 @@ configure_userenv() {
 
     # 本地化设置
     apt-get install -y locales fonts-wqy-zenhei
+    sed -i 's/^# *\(en_US.UTF-8 UTF-8\)/\1/' /etc/locale.gen
     sed -i 's/# zh_CN.UTF-8/zh_CN.UTF-8/' /etc/locale.gen
     locale-gen
     update-locale LANG=en_US.UTF-8 LANGUAGE=en_US:zh_CN
