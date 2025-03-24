@@ -65,7 +65,7 @@ validate_input() {
     }
 
     validate_username() {
-        [[ $1 =~ ^[a-z_][a-z0-9_-]{3,31}$ ]] && ! grep -qE '^(root|bin|daemon|adm|nobody)' <<<"$1"
+        [[ $1 =~ ^[a-z_][a-z0-9_-]{2,31}$ ]] && ! grep -qE '^(root|bin|daemon|adm|nobody)' <<<"$1"
     }
 
     validate_password() {
