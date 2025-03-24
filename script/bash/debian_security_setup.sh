@@ -7,7 +7,7 @@
 # 注意：请务必以 root 身份运行！
 
 #  vps开机会自动安装qemu-gues等软件，要提前用 `ps aux | grep -E 'apt|dpkg'` 检查。
-# 使用方法：` export LC_ALL=en_US.UTF-8 && apt-get update && apt-get install -y --no-install-recommends screen curl && curl -fsSL https://raw.githubusercontent.com/hxol/cloud-backup-files/refs/heads/main/script/bash/debian_security_setup.sh -o /root/security_setup.sh && chmod +x security_setup.sh && screen -S security_setup ./security_setup.sh`
+# 使用方法：` export LC_ALL=en_US.UTF-8 && apt-get update && apt-get install -y --no-install-recommends curl && curl -fsSL https://raw.githubusercontent.com/hxol/cloud-backup-files/refs/heads/main/script/bash/debian_security_setup.sh -o /root/debian_security_setup.sh && chmod +x debian_security_setup.sh && bash debian_security_setup.sh`
 # 
 # 重新连接会话
 # screen -r security_setup
@@ -111,7 +111,7 @@ system_init() {
     echo -e "${YELLOW}[1/9] 更新系统及安装基础工具...${NC}"
     apt-get update && apt-get install -y --no-install-recommends \
         wget apt-transport-https ca-certificates \
-        gnupg2 software-properties-common sudo vim
+        gnupg2 software-properties-common sudo vim screen
 }
 
 # 配置用户环境
