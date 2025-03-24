@@ -267,7 +267,7 @@ mv /etc/ssh/moduli.tmp /etc/ssh/moduli
 configure_firewall() {
     echo -e "${YELLOW}[5/9] 配置nftables防火墙...${NC}"
 
-    apt purge -y ufw iptables
+    apt purge -y ufw iptables firewalld
     apt-get install -y nftables
     systemctl enable --now nftables
 
