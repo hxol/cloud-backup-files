@@ -69,7 +69,8 @@ validate_input() {
     }
 
     validate_password() {
-        [[ ${#1} -ge 8 ]] && grep -qE '[A-Z]' <<<"$1" && grep -qE '[a-z]' <<<"$1" && grep -qE '[0-9]' <<<"$1"
+        [[ ${#1} -ge 8 ]] && grep -qE '[A-Z]' <<<"$1" && grep -qE '[a-z]' <<<"$1" && grep -qE '[0-9]' <<<"$1" && 
+    grep -qE '[!@#$%^&*()=_+,?-]' <<<"$1"
     }
 
     # 执行验证
